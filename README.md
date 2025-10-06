@@ -1,2 +1,33 @@
 # hitop-classification-models
-AI-driven analysis of psychosomatic data to develop dimensional classification models based on the HiTOP (Hierarchical Taxonomy of Psychopathology) framework.
+# AI Models for Psychology: Dimensional Classification of Mental Disorders (HiTOP)
+
+## 🎯 Project Overview
+
+This is an **interdisciplinary joint project** with students from Psychology at the **Hochschule Ravensburg-Weingarten (RWU)** and studends from Computer Science and IT Productmanagement at the **Hochschule Furtwangen**. The goal is to leverage Computer Science and Artificial Intelligence (AI) to address critical challenges in psychology.
+
+The project focuses on developing two AI models based on an extensive database of approximately 10,000 rehabilitation patients from the RWU.
+
+
+## 🛠️ Project Goals
+
+1.  [cite_start]**HiTOP Classification Model:** Develop an AI model to identify the **higher-order dimensions** from the **Hierarchical Taxonomy of Psychopathology (HiTOP)** perspective. HiTOP is a framework that classifies mental disorders **dimensionally** instead of categorically.
+2.  [cite_start]**Treatment Factor Model:** Develop a second AI model to identify **active factors** (Wirkfaktoren) in psychosomatic treatment.
+
+
+
+## 👩‍💻 Team & Supervision
+
+### HFU-Hochschule Furtwangen
+
+| Role | Name | Study Program | Student ID |
+| :--- | :--- | :--- | :--- |
+| **Supervisor** | Prof. Dr. Elena Mäkiö | Computer Science (IN) | - |
+| **Students** | Eduard Gashi | AIN | 272046 |
+| | AIN: 2 additional students | AIN | - |
+| | ITP: 1 additional student | ITP | - |
+
+
+### Project Partner
+
+* [cite_start]**Hochschule Ravensburg-Weingarten (RWU)**: Psychology students
+
