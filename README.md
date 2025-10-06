@@ -3,7 +3,7 @@
 
 ## 🎯 Project Overview
 
-This is an **interdisciplinary joint project** with students from Psychology at the **Hochschule Ravensburg-Weingarten (RWU)** and studends from Computer Science and IT Productmanagement at the **Hochschule Furtwangen**. The goal is to leverage Computer Science and Artificial Intelligence (AI) to address critical challenges in psychology.
+This is an **interdisciplinary joint project** with students from Psychology at the **Hochschule Ravensburg-Weingarten (RWU)** and studends from Computer Science and IT Productmanagement at the **Hochschule Furtwangen**. The goal is to leverage Computer Science and Artificial Intelligence to address critical challenges in psychology.
 
 The project focuses on developing two AI models based on an extensive database of approximately 10,000 rehabilitation patients from the RWU.
 
@@ -19,11 +19,10 @@ The project focuses on developing two AI models based on an extensive database o
 
 ### HFU-Hochschule Furtwangen
 
-**Supervisor** | Prof. Dr. Elena Mäkiö | Computer Science (IN) | - |
+**Supervisor**: Prof. Dr. Elena Mäkiö
 
-**Students**
 | Name | Study Program | Student ID |
-| :--- | :--- | :--- | :--- |
+| :--- | :--- | :--- |
 | Eduard Gashi | AIN | 272046 |
 | AIN: 2 additional students | AIN | - |
 | ITP: 1 additional student | ITP | - |
