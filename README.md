@@ -10,8 +10,8 @@ The project focuses on developing two AI models based on an extensive database o
 
 ## 🛠️ Project Goals
 
-1.  [cite_start]**HiTOP Classification Model:** Develop an AI model to identify the **higher-order dimensions** from the **Hierarchical Taxonomy of Psychopathology (HiTOP)** perspective. HiTOP is a framework that classifies mental disorders **dimensionally** instead of categorically.
-2.  [cite_start]**Treatment Factor Model:** Develop a second AI model to identify **active factors** (Wirkfaktoren) in psychosomatic treatment.
+1.  **HiTOP Classification Model:** Develop an AI model to identify the **higher-order dimensions** from the **Hierarchical Taxonomy of Psychopathology (HiTOP)** perspective. HiTOP is a framework that classifies mental disorders **dimensionally** instead of categorically.
+2.  **Treatment Factor Model:** Develop a second AI model to identify **active factors** (Wirkfaktoren) in psychosomatic treatment.
 
 
 
@@ -19,15 +19,18 @@ The project focuses on developing two AI models based on an extensive database o
 
 ### HFU-Hochschule Furtwangen
 
-| Role | Name | Study Program | Student ID |
+**Supervisor** | Prof. Dr. Elena Mäkiö | Computer Science (IN) | - |
+
+**Students**
+| Name | Study Program | Student ID |
 | :--- | :--- | :--- | :--- |
-| **Supervisor** | Prof. Dr. Elena Mäkiö | Computer Science (IN) | - |
-| **Students** | Eduard Gashi | AIN | 272046 |
-| | AIN: 2 additional students | AIN | - |
-| | ITP: 1 additional student | ITP | - |
+| Eduard Gashi | AIN | 272046 |
+| AIN: 2 additional students | AIN | - |
+| ITP: 1 additional student | ITP | - |
+
 
 
 ### Project Partner
 
-* [cite_start]**Hochschule Ravensburg-Weingarten (RWU)**: Psychology students
+* **Hochschule Ravensburg-Weingarten (RWU)**: Psychology students
 
