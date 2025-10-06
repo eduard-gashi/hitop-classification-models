@@ -21,11 +21,11 @@ The project focuses on developing two AI models based on an extensive database o
 
 **Supervisor**: Prof. Dr. Elena Mäkiö
 
-| Name | Study Program | Student ID |
-| :--- | :--- | :--- |
-| Eduard Gashi | AIN | 272046 |
-| AIN: 2 additional students | AIN | - |
-| ITP: 1 additional student | ITP | - |
+Role | Name | Study Program | Student ID |
+| | :--- | :--- | :--- |
+| | Eduard Gashi | AIN | 272046 |
+| | AIN: 2 additional students | AIN | - |
+| | ITP: 1 additional student | ITP | - |
 
 
 
