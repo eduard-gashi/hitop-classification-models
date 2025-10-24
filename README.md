@@ -25,7 +25,7 @@ Role | Name | Study Program | Student ID |
 | :--- | :--- | :--- | :--- |
 | | Eduard Gashi | AIN | 272046 |
 | | AIN: 2 additional students | AIN | - |
-| | ITP: 1 additional student | ITP | - |
+| | Timo Stockburger | ITP | 277023 |
 
 
 
