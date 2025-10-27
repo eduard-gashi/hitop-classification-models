@@ -23,9 +23,12 @@ The project focuses on developing two AI models based on an extensive database o
 
 Role | Name | Study Program | Student ID |
 | :--- | :--- | :--- | :--- |
-| | Eduard Gashi | AIN | 272046 |
-| | AIN: 2 additional students | AIN | - |
-| | Timo Stockburger | ITP | 277023 |
+| Developer | Eduard Gashi | AIN | 272046 |
+| Developer | Maxim Valuta | AIN | 272628 |
+| Developer | David Kollert | AIN | 277023 |
+| Product Manager | Timo Stockburger | ITP | 277023 |
+| Knowledge Architect | Fabio Meloni | ITP | 277021 |
+| Tech Lead | Danny Behringer | ITP | 277493 |
 
 
 
