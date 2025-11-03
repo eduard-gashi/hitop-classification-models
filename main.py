@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+from typing import List, Dict
 
 
 def load_data():
@@ -39,10 +40,24 @@ def attach_metadata_as_multiindex(therapy_ratings_df, metadata_df, metadata_colu
     return therapy_ratings_df
 
 
+def split_df_by_fragebogen(therapy_ratings_df: pd.DataFrame) -> List[pd.DataFrame]:
+    #TODO: Implement function to split DataFrame by 'Fragebogen' (Eduard)
+    pass
+
+
+def count_answers_per_fragebogen(frageboegen: List[pd.DataFrame]) -> List[Dict[str, int]]:
+    #TODO: Implement function to count answers per 'Fragebogen' (Maxim)
+    pass
+
+
+def plot_results(answers_count: List[Dict[str, int]]):
+    #TODO: Implement visualiation of the results (David)
+    pass 
+
+
 def main():
     df_metadata, df_pre_therapy_ratings, df_post_therapy_ratings = load_data()
-        
-        
+            
     df_pre_therapy_ratings = attach_metadata_as_multiindex(
         therapy_ratings_df=df_pre_therapy_ratings.copy(),
         metadata_df=df_metadata,
@@ -54,7 +69,8 @@ def main():
         metadata_df=df_metadata,
         metadata_column='Variablenlabel' # Possible columns [Frage, Variablenlabel, Test, Skala, Anmerkung]
     )
-    print("Pre-Therapy Ratings with MultiIndex:")
+    
+    df_pre_therapy_ratings = split_df_by_fragebogen(df_pre_therapy_ratings)
     
 
 if __name__ == "__main__":
