@@ -111,7 +111,7 @@ def main():
         metadata_column='Variablenlabel' # Possible columns [Frage, Variablenlabel, Test, Skala, Anmerkung]
     )
     
-    df_pre_therapy_ratings = split_df_by_fragebogen(df_pre_therapy_ratings)
+    df_pre_therapy_ratings = split_df_by_questionnaire(df_pre_therapy_ratings)
     
 
 if __name__ == "__main__":
