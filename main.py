@@ -40,9 +40,50 @@ def attach_metadata_as_multiindex(therapy_ratings_df, metadata_df, metadata_colu
     return therapy_ratings_df
 
 
-def split_df_by_fragebogen(therapy_ratings_df: pd.DataFrame) -> List[pd.DataFrame]:
-    #TODO: Implement function to split DataFrame by 'Fragebogen' (Eduard)
-    pass
+def split_df_by_questionnaire(
+    therapy_ratings_df: pd.DataFrame, 
+    metadata_df: pd.DataFrame
+) -> Dict[str, pd.DataFrame]:
+    """
+    Split a DataFrame of therapy ratings into separate DataFrames by questionnaire ('Test').
+
+    Parameters
+    ----------
+    therapy_ratings_df : pd.DataFrame
+        The main DataFrame containing the therapy ratings.
+    metadata_df : pd.DataFrame
+        Metadata DataFrame containing the 'Test' column which represents the name of the distinct questionnaires.
+
+    Returns
+    -------
+    Dict[str, pd.DataFrame]
+        Dictionary where each key is a questionnaire name ('Test'), and each value is the DataFrame for that questionnaire.
+
+    Example
+    -------
+    >>> questionnaires = split_df_by_questionnaire(ratings_df, meta_df)
+    >>> for questionnaire, questionnaire_df in questionnaires.items():
+    ...     print(f"{name}: shape={df.shape}")
+    """
+    # Extract the code (e.g. 'waiai301', 'phqai014', etc.) from the MultiIndex (second level)
+    codes = [col[1] for col in therapy_ratings_df.columns]
+
+    # Map each variable code to its questionnaire ('Test') as given in the metadata
+    code_to_test = metadata_df.set_index('Variablenname')['Test'].to_dict()
+
+    # Map test assignments to each column in the DataFrame
+    column_tests = [code_to_test.get(code, "Unbekannt") for code in codes]
+
+    # Get the unique set of questionnaire names
+    unique_tests = set(column_tests)
+
+    # Build a dictionary: {questionnaire_name: DataFrame of that questionnaire}
+    questionnaires_dict = {}
+    for test in unique_tests:
+        relevant_columns = [col for col, t in zip(therapy_ratings_df.columns, column_tests) if t == test]
+        questionnaires_dict[test] = therapy_ratings_df.loc[:, relevant_columns].copy()
+
+    return questionnaires_dict
 
 
 def count_answers_per_fragebogen(frageboegen: List[pd.DataFrame]) -> List[Dict[str, int]]:
