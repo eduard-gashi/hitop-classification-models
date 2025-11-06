@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 from typing import List, Dict
 
-# test
+
 def load_data():
     current_dir = Path(__file__).parent
     dataset_dir = current_dir / 'Original Dataset'
@@ -62,8 +62,8 @@ def split_df_by_questionnaire(
     Example
     -------
     >>> questionnaires = split_df_by_questionnaire(ratings_df, meta_df)
-    >>> for questionnaire, questionnaire_df in questionnaires.items():
-    ...     print(f"{name}: shape={df.shape}")
+    >>> for questionnaire_name, questionnaire_df in questionnaires.items():
+    ...     print(f"{questionnaire_name}: shape={questionnaire_df.shape}")
     """
     # Extract the code (e.g. 'waiai301', 'phqai014', etc.) from the MultiIndex (second level)
     codes = [col[1] for col in therapy_ratings_df.columns]
