@@ -25,4 +25,3 @@ PLOTS_DIR = OUTPUT_DIR / "plots"
 RESULTS_DIR = OUTPUT_DIR / "results"
 
 #TODO: other constants
-
