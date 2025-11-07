@@ -22,5 +22,5 @@ ids = pre_sampled["Code"]
 post_sampled = df_post[df_post["Code"].isin(ids)]
 
 # Exportieren der gesampelten Datensätze
-pre_sampled.to_excel(os.path.join(sampled_dataset_path, "pre_sampled_dataset.xlsx"), index=False)
-post_sampled.to_excel(os.path.join(sampled_dataset_path, "post_sampled_dataset.xlsx"), index=False)
+pre_sampled.to_excel(os.path.join(sampled_dataset_path, "pre_dataset.xlsx"), index=False)
+post_sampled.to_excel(os.path.join(sampled_dataset_path, "post_dataset.xlsx"), index=False)
