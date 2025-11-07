@@ -5,19 +5,45 @@ import numpy as np
 from pathlib import Path
 from typing import Dict
 from sklearn.preprocessing import StandardScaler
+from config import (
+    ORIGINAL_PRE_DATASET,
+    ORIGINAL_POST_DATASET,
+    ORIGINAL_TEST_VARIABLES,
+    SAMPLED_PRE_DATASET,
+    SAMPLED_POST_DATASET,
+    PLOTS_DIR,
+    RESULTS_DIR
+)
 
 
-def load_data():
-    """Lädt alle benötigten Excel-Dateien."""
-    current_dir = Path(__file__).parent
-    dataset_dir = current_dir / 'Original Dataset'
-    sampled_dataset_dir = current_dir / 'Sampled Dataset'
+def load_data(data_type='processed'):
+    """
+    Loads therapy rating datasets.
     
-    df_test_variables = pd.read_excel(dataset_dir / 'Test-Variablen Software ab 2014.xlsx')
-    df_pre_therapy_ratings = pd.read_excel(sampled_dataset_dir / 'pre_sampled_dataset.xlsx')
-    df_post_therapy_ratings = pd.read_excel(sampled_dataset_dir / 'post_sampled_dataset.xlsx')
+    Parameters:
+    -----------
+    data_type : str, default='processed'
+        Type of data to load. Options:
+        - 'raw' or 'original': Loads original datasets
+        - 'processed' or 'sampled': Loads sampled/processed datasets
+    
+    Returns:
+    --------
+    tuple of pd.DataFrame
+        (df_test_vars, df_pre, df_post) - Test variables dataframe, pre and post therapy rating dataframes
+    """
+    if data_type in ['raw', 'original']:
+        df_pre = pd.read_excel(ORIGINAL_PRE_DATASET)
+        df_post = pd.read_excel(ORIGINAL_POST_DATASET)
+    elif data_type in ['processed', 'sampled']:
+        df_pre = pd.read_excel(SAMPLED_PRE_DATASET)
+        df_post = pd.read_excel(SAMPLED_POST_DATASET)
+    else:
+        raise ValueError(f"Invalid data_type: {data_type}. Use 'raw', 'original', 'processed', or 'sampled'.")
+    
+    df_test_vars = pd.read_excel(ORIGINAL_TEST_VARIABLES)
 
-    return df_test_variables, df_pre_therapy_ratings, df_post_therapy_ratings
+    return df_test_vars, df_pre, df_post
 
 
 def attach_metadata_as_multiindex(therapy_ratings_df, metadata_df, metadata_column='Variablenlabel'):
