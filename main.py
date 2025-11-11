@@ -353,6 +353,17 @@ def visualize_specific_fragebogen(frageboegen: Dict[str, pd.DataFrame], fragebog
         print(f"  Frage-{i+1}: {col}")
 
 
+def get_rw_columns(pre_frageboegen: Dict[str, pd.DataFrame]) -> Dict[str, pd.DataFrame] :
+    """Extract only the columns with the RW-Codes out of the dataframe."""
+    pre_frageboegen_rw = {}
+    
+    for name, df in pre_frageboegen.items():
+        rw_cols = [col for col in df.columns if 'rw' in str(col).lower()]
+        pre_frageboegen_rw[name] = df[rw_cols].copy()
+
+    return pre_frageboegen_rw
+
+
 def main():
     # Load data
     df_metadata, df_pre_therapy_ratings, df_post_therapy_ratings = load_data()
@@ -367,6 +378,9 @@ def main():
     # Split pre-therapy ratings by questionnaire
     pre_frageboegen = split_df_by_questionnaire(df_pre_therapy_ratings, df_metadata)
     
+    # Extract only RW columns
+    pre_frageboegen_rw = get_rw_columns(pre_frageboegen)
+
     # Count answers per questionnaire
     answers_count = count_answers_per_fragebogen(pre_frageboegen)
     
