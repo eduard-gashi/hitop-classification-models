@@ -72,7 +72,8 @@ def attach_metadata_as_multiindex(therapy_ratings_df, metadata_df, metadata_colu
 
 def split_df_by_questionnaire(
     therapy_ratings_df: pd.DataFrame, 
-    metadata_df: pd.DataFrame
+    metadata_df: pd.DataFrame,
+    include_diagnosis_cols: bool = False
 ) -> Dict[str, pd.DataFrame]:
     """Split a DataFrame of therapy ratings into separate DataFrames by questionnaire ('Test')."""
     codes = [col[1] for col in therapy_ratings_df.columns]
@@ -83,8 +84,11 @@ def split_df_by_questionnaire(
     questionnaires_dict = {}
     for test in unique_tests:
         relevant_columns = [col for col, t in zip(therapy_ratings_df.columns, column_tests) if t == test]
+        if include_diagnosis_cols:
+            diagnosis_columns = [col for col in therapy_ratings_df.columns if str(col[0]).startswith('Diagnose')]
+            relevant_columns.extend(diagnosis_columns)
         questionnaires_dict[test] = therapy_ratings_df.loc[:, relevant_columns].copy()
-
+        
     return questionnaires_dict
 
 
@@ -376,8 +380,8 @@ def main():
     )
     
     # Split pre-therapy ratings by questionnaire
-    pre_frageboegen = split_df_by_questionnaire(df_pre_therapy_ratings, df_metadata)
-    
+    pre_frageboegen = split_df_by_questionnaire(df_pre_therapy_ratings, df_metadata, include_diagnosis_cols=True)
+
     # Extract only RW columns
     pre_frageboegen_rw = get_rw_columns(pre_frageboegen)
 
