@@ -10,6 +10,7 @@ from config import (
     ORIGINAL_POST_DATASET,
     ORIGINAL_TEST_VARIABLES,
     SAMPLED_PRE_DATASET,
+    SAMPLED_PRE_DATASET_CSV,
     SAMPLED_POST_DATASET,
     PLOTS_DIR,
     RESULTS_DIR
@@ -36,7 +37,7 @@ def load_data(data_type='processed'):
         df_pre = pd.read_excel(ORIGINAL_PRE_DATASET)
         df_post = pd.read_excel(ORIGINAL_POST_DATASET)
     elif data_type in ['processed', 'sampled']:
-        df_pre = pd.read_excel(SAMPLED_PRE_DATASET)
+        df_pre = pd.read_csv(SAMPLED_PRE_DATASET_CSV)
         df_post = pd.read_excel(SAMPLED_POST_DATASET)
     else:
         raise ValueError(f"Invalid data_type: {data_type}. Use 'raw', 'original', 'processed', or 'sampled'.")
