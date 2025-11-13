@@ -357,12 +357,15 @@ def visualize_specific_fragebogen(frageboegen: Dict[str, pd.DataFrame], fragebog
         print(f"  Frage-{i+1}: {col}")
 
 
-def get_rw_columns(pre_frageboegen: Dict[str, pd.DataFrame]) -> Dict[str, pd.DataFrame] :
+def get_rw_columns(pre_frageboegen: Dict[str, pd.DataFrame], keep_diagnosis_cols: bool) -> Dict[str, pd.DataFrame] :
     """Extract only the columns with the RW-Codes out of the dataframe."""
     pre_frageboegen_rw = {}
     
     for name, df in pre_frageboegen.items():
-        rw_cols = [col for col in df.columns if 'rw' in str(col).lower()]
+        rw_cols = []
+        if keep_diagnosis_cols:
+            rw_cols += [col for col in df.columns if str(col[0]).startswith('Diagnose')]
+        rw_cols += [col for col in df.columns if 'rw' in str(col).lower()]
         pre_frageboegen_rw[name] = df[rw_cols].copy()
 
     return pre_frageboegen_rw
@@ -383,10 +386,10 @@ def main():
     pre_frageboegen = split_df_by_questionnaire(df_pre_therapy_ratings, df_metadata, include_diagnosis_cols=True)
 
     # Extract only RW columns
-    pre_frageboegen_rw = get_rw_columns(pre_frageboegen)
+    pre_frageboegen_rw = get_rw_columns(pre_frageboegen, keep_diagnosis_cols=True)
 
     # Count answers per questionnaire
-    answers_count = count_answers_per_fragebogen(pre_frageboegen)
+    answers_count = count_answers_per_fragebogen(pre_frageboegen_rw)
     
     # Print summary
     print("\n=== Zusammenfassung der Antworten pro Fragebogen ===")
@@ -400,12 +403,12 @@ def main():
     
     # Liste verfügbare Fragebögen
     print("\n=== Verfügbare Fragebögen für Detailvisualisierung ===")
-    fragebogen_names = [str(name) for name in pre_frageboegen.keys() if pd.notna(name)]
+    fragebogen_names = [str(name) for name in pre_frageboegen_rw.keys() if pd.notna(name)]
     for i, name in enumerate(sorted(fragebogen_names), 1):
         print(f"  {i}. {name}")
     
     # Visualisiere spezifische Fragebögen
-    visualize_specific_fragebogen(pre_frageboegen, "ADHS-E", normalize=True)
+    visualize_specific_fragebogen(pre_frageboegen_rw, "EDE-Q", normalize=True)
     # visualize_specific_fragebogen(pre_frageboegen, "PHQ-9", normalize=True)
     # visualize_specific_fragebogen(pre_frageboegen, "IIP", normalize=True)
 
