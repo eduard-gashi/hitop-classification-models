@@ -470,13 +470,17 @@ def get_questionnaire_means_by_diagnosis(
 def plot_questionnaire_means_by_diagnosis(means_df: pd.DataFrame) -> None:
     """Plots the means of questionnaire answers based on diagnosis presence."""
     labels = [col[0] for col in means_df.columns][:-1]
+    N = len(labels)
+    x = np.arange(N)
+    width = 0.35
 
-    plt.bar(labels, means_df.values[0][:-1])
-    plt.bar(labels, means_df.values[1][:-1])
+    plt.bar(x - width/2, means_df.values[0][:-1], width=width, label=means_df.index[0])
+    plt.bar(x + width/2, means_df.values[1][:-1], width=width, label=means_df.index[1])
     plt.title("Mean answers by diagnosis presence", fontsize=18)
     plt.ylabel("Mean value of the answers")
     plt.legend([means_df.index[0], means_df.index[1]])
-    plt.xticks(rotation=45, ha="right")
+    plt.xticks(x, labels, rotation=45, ha="right")
+
     plt.tight_layout()
     plt.show()
 
