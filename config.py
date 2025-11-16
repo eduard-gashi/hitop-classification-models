@@ -14,11 +14,15 @@ ORIGINAL_PRE_DATASET = ORIGINAL_DATASET_DIR / "pre_dataset.xlsx"
 ORIGINAL_POST_DATASET= ORIGINAL_DATASET_DIR / "post_dataset.xlsx"
 ORIGINAL_TEST_VARIABLES = ORIGINAL_DATASET_DIR / "test_variables.xlsx"
 
+# Standardized datasets
+STANDARDIZED_PRE_DATASET = ORIGINAL_DATASET_DIR / "pre_dataset_standardized.xlsx"
+STANDARDIZED_POST_DATASET= ORIGINAL_DATASET_DIR / "post_dataset_standardized.xlsx"
+
+
 # Sampled Dataset
 SAMPLED_DATASET_DIR = PROCESSED_DATA_DIR
 SAMPLED_PRE_DATASET = SAMPLED_DATASET_DIR / "pre_dataset.xlsx"
 SAMPLED_POST_DATASET = SAMPLED_DATASET_DIR / "post_dataset.xlsx"
-SAMPLED_PRE_DATASET_CSV = SAMPLED_DATASET_DIR / "pre_dataset.csv"
 
 # Output paths
 OUTPUT_DIR = BASE_DIR / "outputs"
