@@ -1,77 +1,63 @@
 import pandas as pd
-from pathlib import Path
-from typing import List, Dict
-
-# test
-def load_data():
-    current_dir = Path(__file__).parent
-    dataset_dir = current_dir / 'Original Dataset'
-    
-    df_test_variables = pd.read_excel(dataset_dir / 'Test-Variablen Software ab 2014.xlsx')
-    df_pre_therapy_ratings = pd.read_excel(dataset_dir / 'Reha BG 2014-2022 prä Daten+Ther.ratings_anonym(1).xlsx')
-    df_post_therapy_ratings = pd.read_excel(dataset_dir / 'Reha BG 2014-2022 post Daten_anonym(1).xlsx')
-
-    return df_test_variables, df_pre_therapy_ratings, df_post_therapy_ratings
-
-
-def attach_metadata_as_multiindex(therapy_ratings_df, metadata_df, metadata_column='Variablenlabel'):
-    # Delete duplicates in metadata and therapy_ratings DataFrames
-    if metadata_df['Variablenname'].duplicated().any():
-        metadata_df = metadata_df.drop_duplicates(subset=['Variablenname'], keep='first')
-        
-    if therapy_ratings_df.columns.duplicated().any():
-        therapy_ratings_df = therapy_ratings_df.loc[:, ~therapy_ratings_df.columns.duplicated(keep='first')]
-    
-    # Lookupup-Table: Mapping from Codes to desired metadata 
-    metadata_lookup = metadata_df.set_index('Variablenname')[metadata_column]
-    sorted_metadata = metadata_lookup.reindex(therapy_ratings_df.columns)
-        
-    # Create MultiIndex from metadata
-    multi_index = pd.MultiIndex.from_arrays(
-        [
-            sorted_metadata.fillna(f'Unbekannt: {metadata_column}'),  # Layer 1: Metadata labels
-            sorted_metadata.index # Layer 2: Original variable codes
-        ],
-        names=[metadata_column, 'Code']
-    )
-    
-    therapy_ratings_df.columns = multi_index
-    
-    return therapy_ratings_df
-
-
-def split_df_by_fragebogen(therapy_ratings_df: pd.DataFrame) -> List[pd.DataFrame]:
-    #TODO: Implement function to split DataFrame by 'Fragebogen' (Eduard)
-    pass
-
-
-def count_answers_per_fragebogen(frageboegen: List[pd.DataFrame]) -> List[Dict[str, int]]:
-    #TODO: Implement function to count answers per 'Fragebogen' (Maxim)
-    pass
-
-
-def plot_results(answers_count: List[Dict[str, int]]):
-    #TODO: Implement visualiation of the results (David)
-    pass 
+from typing import Dict
+from src.analysis.analysis import get_rw_columns, count_answers_per_fragebogen, get_questionnaire_means_by_diagnosis
+from src.processing.data_loader import load_data
+from src.processing.metadata import attach_metadata_as_multiindex, split_df_by_questionnaire
+from src.visualization.plots import(
+        visualize_specific_fragebogen,
+        plot_questionnaire_means_by_diagnosis
+)
 
 
 def main():
+    # Load data
     df_metadata, df_pre_therapy_ratings, df_post_therapy_ratings = load_data()
-            
+
+    # Attach metadata as MultiIndex to pre-therapy ratings
     df_pre_therapy_ratings = attach_metadata_as_multiindex(
         therapy_ratings_df=df_pre_therapy_ratings.copy(),
         metadata_df=df_metadata,
-        metadata_column='Variablenlabel' # Possible columns [Frage, Variablenlabel, Test, Skala, Anmerkung]
+        metadata_column="Variablenlabel",
     )
-    
-    df_post_therapy_ratings = attach_metadata_as_multiindex(
-        therapy_ratings_df=df_post_therapy_ratings.copy(),
-        metadata_df=df_metadata,
-        metadata_column='Variablenlabel' # Possible columns [Frage, Variablenlabel, Test, Skala, Anmerkung]
+
+    # Split pre-therapy ratings by questionnaire
+    pre_frageboegen = split_df_by_questionnaire(
+        df_pre_therapy_ratings, df_metadata, include_diagnosis_cols=True
     )
-    
-    df_pre_therapy_ratings = split_df_by_fragebogen(df_pre_therapy_ratings)
-    
+
+    # Extract only RW columns
+    pre_frageboegen_rw = get_rw_columns(pre_frageboegen, keep_diagnosis_cols=True)
+
+    # Count answers per questionnaire
+    answers_count = count_answers_per_fragebogen(pre_frageboegen_rw)
+
+    # Print summary
+    print("\n=== Zusammenfassung der Antworten pro Fragebogen ===")
+    sorted_items = sorted(
+        [(str(name), count) for name, count in answers_count.items() if pd.notna(name)],
+        key=lambda x: x[1],
+        reverse=True,
+    )
+    for name, count in sorted_items:
+        print(f"  {name}: {count} Antworten")
+
+    # Liste verfügbare Fragebögen
+    print("\n=== Verfügbare Fragebögen für Detailvisualisierung ===")
+    fragebogen_names = [
+        str(name) for name in pre_frageboegen_rw.keys() if pd.notna(name)
+    ]
+    for i, name in enumerate(sorted(fragebogen_names), 1):
+        print(f"  {i}. {name}")
+
+    # Visualisiere spezifische Fragebögen
+    # visualize_specific_fragebogen(pre_frageboegen_rw, "EDE-Q", normalize=True)
+    # visualize_specific_fragebogen(pre_frageboegen, "PHQ-9", normalize=True)
+    # visualize_specific_fragebogen(pre_frageboegen, "IIP", normalize=True)
+
+    mean_df = get_questionnaire_means_by_diagnosis(pre_frageboegen_rw, "EDE-Q", "F33.1")
+
+    plot_questionnaire_means_by_diagnosis(mean_df)
+
 
 if __name__ == "__main__":
     main()
