@@ -5,49 +5,7 @@ import numpy as np
 from pathlib import Path
 from typing import Dict
 from sklearn.preprocessing import StandardScaler
-from config import (
-    ORIGINAL_PRE_DATASET,
-    ORIGINAL_POST_DATASET,
-    ORIGINAL_TEST_VARIABLES,
-    SAMPLED_PRE_DATASET,
-    SAMPLED_PRE_DATASET_CSV,
-    SAMPLED_POST_DATASET,
-    PLOTS_DIR,
-    RESULTS_DIR,
-)
-
-
-def load_data(data_type="processed"):
-    """
-    Loads therapy rating datasets.
-
-    Parameters:
-    -----------
-    data_type : str, default='processed'
-        Type of data to load. Options:
-        - 'raw' or 'original': Loads original datasets
-        - 'processed' or 'sampled': Loads sampled/processed datasets
-
-    Returns:
-    --------
-    tuple of pd.DataFrame
-        (df_test_vars, df_pre, df_post) - Test variables dataframe, pre and post therapy rating dataframes
-    """
-    if data_type in ["raw", "original"]:
-        df_pre = pd.read_excel(ORIGINAL_PRE_DATASET)
-        df_post = pd.read_excel(ORIGINAL_POST_DATASET)
-    elif data_type in ["processed", "sampled"]:
-        df_pre = pd.read_csv(SAMPLED_PRE_DATASET_CSV)
-        df_post = pd.read_excel(SAMPLED_POST_DATASET)
-    else:
-        raise ValueError(
-            f"Invalid data_type: {data_type}. Use 'raw', 'original', 'processed', or 'sampled'."
-        )
-
-    df_test_vars = pd.read_excel(ORIGINAL_TEST_VARIABLES)
-
-    return df_test_vars, df_pre, df_post
-
+from src.processing.data_loader import load_data
 
 def attach_metadata_as_multiindex(
     therapy_ratings_df, metadata_df, metadata_column="Variablenlabel"
