@@ -36,3 +36,10 @@ Role | Name | Study Program | Student ID |
 
 * **Hochschule Ravensburg-Weingarten (RWU)**: Psychology students
 
+
+### Usage
+
+**Run the main module from the project root:**
+python -m src.main
+
+
