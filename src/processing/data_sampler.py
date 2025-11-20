@@ -1,5 +1,5 @@
 from src.processing.data_loader import load_data
-from config import(
+from src.config import(
     SAMPLED_PRE_DATASET,
     SAMPLED_POST_DATASET,
 )

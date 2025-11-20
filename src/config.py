@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # Base directory
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).parent.parent
 
 # Data paths
 DATA_DIR = BASE_DIR / "data"

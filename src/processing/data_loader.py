@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-from config import (
+from src.config import (
     ORIGINAL_PRE_DATASET,
     ORIGINAL_POST_DATASET,
     ORIGINAL_TEST_VARIABLES,
