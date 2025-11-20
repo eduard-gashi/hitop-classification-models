@@ -57,6 +57,8 @@ def main():
     df_diagnosis_presence = add_diagnosis_presence_column(pre_frageboegen_rw, "EDE-Q", "F33.1")
 
     result_df = calculate_statistic_significance(df_diagnosis_presence, "F33.1")
+    
+    plot_means_and_p_values(result_df)
 
 
 if __name__ == "__main__":
