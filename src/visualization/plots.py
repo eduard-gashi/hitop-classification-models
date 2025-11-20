@@ -193,21 +193,28 @@ def visualize_specific_fragebogen(
         print(f"  Frage-{i+1}: {col}")
 
 
-
-
-def plot_questionnaire_means_by_diagnosis(means_df: pd.DataFrame) -> None:
-    """Plots the means of questionnaire answers based on diagnosis presence."""
-    labels = [col[0] for col in means_df.columns][:-1]
+def plot_means_and_p_values(df: pd.DataFrame) -> None:
+    """Plots the means and p-values of questionnaire answers based on diagnosis presence."""
+    df = df[:-1]
+    questions = df['question'].values
+    labels = [question[0] for question in questions]
     N = len(labels)
     x = np.arange(N)
     width = 0.35
 
-    plt.bar(x - width/2, means_df.values[0][:-1], width=width, label=means_df.index[0])
-    plt.bar(x + width/2, means_df.values[1][:-1], width=width, label=means_df.index[1])
-    plt.title("Mean answers by diagnosis presence", fontsize=18)
-    plt.ylabel("Mean value of the answers")
-    plt.legend([means_df.index[0], means_df.index[1]])
+    plt.bar(x - width/2, df['mean_true'].values, width=width, label="Diagnose vorhanden")
+    plt.bar(x + width/2, df['mean_false'].values, width=width, label="Diagnose nicht vorhanden")
+    plt.title("Mittelwerte nach Diagnose", fontsize=18)
+    plt.ylabel("Mittelwert der Frageantworten")
     plt.xticks(x, labels, rotation=45, ha="right")
+    plt.legend()
+    
+    # Show the p-values above the bars
+    ymax = max(np.max(df['mean_true'].values), np.max(df['mean_false'].values))
+    label_offset = ymax + 0.04*ymax
+
+    for i, p in enumerate(df['p_value'].values):
+        plt.text(x[i], label_offset, f"p = {p:.3f}", ha="center", va="top", fontsize=10, color="green", rotation=0)
 
     plt.tight_layout()
     plt.show()

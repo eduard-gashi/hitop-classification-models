@@ -1,5 +1,6 @@
 from typing import Dict
 import pandas as pd
+from scipy.stats import ttest_ind
 
 
 def count_answers_per_fragebogen(
@@ -137,34 +138,49 @@ def get_rw_columns(
     return pre_frageboegen_rw
 
 
-def get_questionnaire_means_by_diagnosis(
+def add_diagnosis_presence_column(
     questionnaires_dict: Dict[str, pd.DataFrame],
     questionnaire_name: str,
     diagnosis_code: str,
 ) -> pd.DataFrame:
-    """Extracts mean for every answer of a questionnaire based on whether a diagnosis is given or not."""
+    """Adds a column to the DataFrame indicating whether a diagnosis is given for a patience or not."""
     df = questionnaires_dict[questionnaire_name]
-
+    
     # Create a column indicating the presence of the diagnosis code for a participant
     df[diagnosis_code] = df.apply(
         lambda row: True if diagnosis_code in row.values else False, axis=1
     )
 
+    return df
+
+
+def calculate_statistic_significance(
+    df: pd.DataFrame, 
+    diagnosis_code: str
+) -> pd.DataFrame:
     question_cols = [col for col in df.columns if not "Diagnose" in str(col[0])]
+    diagnose_flag_col = (diagnosis_code, "")
 
-    mean_false = []
-    mean_true = []
-
+    results = []
     for col in question_cols:
-        val_false = df[df[(diagnosis_code, "")] == False][col].mean()
-        val_true = df[df[(diagnosis_code, "")] == True][col].mean()
-        mean_false.append(val_false)
-        mean_true.append(val_true)
+        values_true = df[df[diagnose_flag_col]==True][col].dropna()
+        values_false = df[df[diagnose_flag_col]==False][col].dropna()
+        if len(values_true) >= 2 and len(values_false) >= 2:
+            stat, p_value = ttest_ind(values_true, values_false, equal_var=False)
+            results.append({
+                'question': col,
+                'mean_true': values_true.mean(),
+                'mean_false': values_false.mean(),
+                'p_value': p_value,
+            })
+        else:
+            results.append({
+                'question': col,
+                'mean_true': values_true.mean() if len(values_true) else None,
+                'mean_false': values_false.mean() if len(values_false) else None,
+                'p_value': None,
+            })
 
-    result_df = pd.DataFrame(
-        columns=question_cols,
-        data=[mean_false, mean_true],
-        index=[f"{diagnosis_code}=False", f"{diagnosis_code}=True"],
-    )
+    results_df = pd.DataFrame(results)
 
-    return result_df
+    return results_df

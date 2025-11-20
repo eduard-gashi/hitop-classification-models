@@ -1,11 +1,11 @@
 import pandas as pd
 from typing import Dict
-from src.analysis.analysis import get_rw_columns, count_answers_per_fragebogen, get_questionnaire_means_by_diagnosis
+from src.analysis.analysis import get_rw_columns, count_answers_per_fragebogen, add_diagnosis_presence_column, calculate_statistic_significance
 from src.processing.data_loader import load_data
 from src.processing.metadata import attach_metadata_as_multiindex, split_df_by_questionnaire
 from src.visualization.plots import(
         visualize_specific_fragebogen,
-        plot_questionnaire_means_by_diagnosis
+        plot_means_and_p_values
 )
 
 
@@ -54,9 +54,9 @@ def main():
     # visualize_specific_fragebogen(pre_frageboegen, "PHQ-9", normalize=True)
     # visualize_specific_fragebogen(pre_frageboegen, "IIP", normalize=True)
 
-    mean_df = get_questionnaire_means_by_diagnosis(pre_frageboegen_rw, "EDE-Q", "F33.1")
+    df_diagnosis_presence = add_diagnosis_presence_column(pre_frageboegen_rw, "EDE-Q", "F33.1")
 
-    plot_questionnaire_means_by_diagnosis(mean_df)
+    result_df = calculate_statistic_significance(df_diagnosis_presence, "F33.1")
 
 
 if __name__ == "__main__":
