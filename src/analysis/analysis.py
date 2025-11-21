@@ -122,38 +122,6 @@ def print_statistics(stats: Dict, fragebogen_name: str):
     print("\n" + "=" * 80)
 
 
-def get_rw_columns(
-    pre_frageboegen: Dict[str, pd.DataFrame], keep_diagnosis_cols: bool
-) -> Dict[str, pd.DataFrame]:
-    """Extract only the columns with the RW-Codes out of the dataframe."""
-    pre_frageboegen_rw = {}
-
-    for name, df in pre_frageboegen.items():
-        rw_cols = []
-        if keep_diagnosis_cols:
-            rw_cols += [col for col in df.columns if str(col[0]).startswith("Diagnose")]
-        rw_cols += [col for col in df.columns if "rw" in str(col).lower()]
-        pre_frageboegen_rw[name] = df[rw_cols].copy()
-
-    return pre_frageboegen_rw
-
-
-def add_diagnosis_presence_column(
-    questionnaires_dict: Dict[str, pd.DataFrame],
-    questionnaire_name: str,
-    diagnosis_code: str,
-) -> pd.DataFrame:
-    """Adds a column to the DataFrame indicating whether a diagnosis is given for a patience or not."""
-    df = questionnaires_dict[questionnaire_name]
-    
-    # Create a column indicating the presence of the diagnosis code for a participant
-    df[diagnosis_code] = df.apply(
-        lambda row: True if diagnosis_code in row.values else False, axis=1
-    )
-
-    return df
-
-
 def calculate_statistic_significance(
     df: pd.DataFrame, 
     diagnosis_code: str
