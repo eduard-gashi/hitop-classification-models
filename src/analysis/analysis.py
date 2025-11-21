@@ -165,6 +165,10 @@ def calculate_statistic_significance(
     for col in question_cols:
         values_true = df[df[diagnose_flag_col]==True][col].dropna()
         values_false = df[df[diagnose_flag_col]==False][col].dropna()
+        
+        values_true = values_true.astype(float)
+        values_false = values_false.astype(float)
+
         if len(values_true) >= 2 and len(values_false) >= 2:
             stat, p_value = ttest_ind(values_true, values_false, equal_var=False)
             results.append({
