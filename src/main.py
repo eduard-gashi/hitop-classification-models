@@ -1,6 +1,6 @@
 import pandas as pd
 from typing import Dict
-from src.analysis.analysis import count_answers_per_fragebogen, calculate_statistic_significance
+from src.analysis.analysis import count_answers_per_fragebogen, calculate_statistic_significance, calculate_vif_per_questionnaire
 from src.processing.data_loader import load_data
 from src.processing.metadata import attach_metadata_as_multiindex, split_df_by_questionnaire
 from src.processing.preprocessing import extract_columns_from_questionnaire, add_diagnosis_presence_column
@@ -51,14 +51,13 @@ def main():
         print(f"  {i}. {name}")
 
     # Visualisiere spezifische Fragebögen
-    visualize_specific_fragebogen(pre_frageboegen, "EDE-Q", normalize=True)
+    #visualize_specific_fragebogen(pre_frageboegen, "EDE-Q", normalize=True)
     # visualize_specific_fragebogen(pre_frageboegen, "PHQ-9", normalize=True)
     # visualize_specific_fragebogen(pre_frageboegen, "IIP", normalize=True)
 
-    df_diagnosis_presence = add_diagnosis_presence_column(pre_frageboegen_sliced, "EDE-Q", "F33.1")
-
-    result_df = calculate_statistic_significance(df_diagnosis_presence, "F33.1")
-    
+    # df_diagnosis_presence = add_diagnosis_presence_column(pre_frageboegen_sliced, "EDE-Q", "F33.1")
+    # result_df = calculate_statistic_significance(df_diagnosis_presence, "F33.1")
+    calculate_vif_per_questionnaire({"EDE-Q": pre_frageboegen_sliced["EDE-Q"]})
     #plot_means_and_p_values(result_df)
 
 

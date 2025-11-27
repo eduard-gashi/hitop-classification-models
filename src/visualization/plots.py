@@ -141,15 +141,16 @@ def _plot_boxplots(df: pd.DataFrame, name: str, normalize: bool):
 
 
 def _plot_correlation_heatmap(df: pd.DataFrame, name: str):
-    """Erstellt die klassische Heatmap."""
     plt.figure(figsize=(12, 10))
     corr = df.corr()
-    
+
     sns.heatmap(
         corr,
         annot=False,
         fmt=".2f",
-        cmap="coolwarm",
+        cmap="RdBu_r",     # <--- Stärkerer Kontrast (Rot/Blau)
+        center=0,          # <--- Zwingt 0 auf Weiß (wichtig!)
+        vmin=-1, vmax=1,   # <--- Skala fixieren (-1 bis 1)
         square=True,
         linewidths=0.5,
         cbar_kws={"shrink": 0.8},
@@ -157,6 +158,7 @@ def _plot_correlation_heatmap(df: pd.DataFrame, name: str):
     plt.title(f"Korrelationsmatrix – {name}", fontsize=14, fontweight="bold")
     plt.tight_layout()
     plt.show()
+
 
 
 def _plot_clustermap(df: pd.DataFrame, name: str):
@@ -220,3 +222,51 @@ def plot_means_and_p_values(df: pd.DataFrame) -> None:
 
     plt.tight_layout()
     plt.show()
+
+
+def plot_histogram_overview(df: pd.DataFrame, name: str):
+    plt.figure(figsize=(10, 6))
+    
+    # Plottet alle Spalten übereinander (gut für die Gesamtverteilung des Fragebogens)
+    sns.histplot(
+        df.melt(), 
+        x="value", 
+        kde=True, # Zeigt die Kurve
+        bins=30,
+        color="teal"
+    )
+    
+    plt.title(f"Gesamtverteilung der Antworten – {name}", fontsize=14)
+    plt.xlabel("Z-Score")
+    plt.ylabel("Häufigkeit")
+    plt.show()
+
+
+def plot_answer_distributions(df: pd.DataFrame, name: str):
+    """Zeigt die Verteilung der z-standardisierten Antworten für alle Items."""
+    
+    # Daten ins "Long Format" bringen (nötig für Seaborn FacetGrid)
+    # id_vars=[] weil wir keine ID Spalte haben, alles sind Messwerte
+    df_long = df.melt(var_name="Item", value_name="Z-Score")
+    
+    plt.figure(figsize=(12, 8))
+    
+    # Ein Violinplot zeigt die Dichte UND die Streuung perfekt
+    sns.violinplot(
+        data=df_long,
+        x="Z-Score",
+        y="Item",
+        orient="h", # Horizontal ist besser lesbar bei vielen Items
+        palette="viridis",
+        inner="quartile" # Zeigt Median und Quartile als Striche
+    )
+    
+    plt.title(f"Antwortverteilung (Z-Scores) – {name}", fontsize=14, fontweight="bold")
+    plt.xlabel("Z-Score (0 = Durchschnitt)", fontsize=12)
+    plt.ylabel("Fragebogen Items", fontsize=12)
+    plt.axvline(0, color="black", linestyle="--", alpha=0.5) # Nulllinie zur Orientierung
+    plt.tight_layout()
+    plt.show()
+
+# Aufruf:
+# plot_answer_distributions(dfs_dict["SAS"], "SAS")

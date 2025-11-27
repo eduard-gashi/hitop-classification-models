@@ -13,7 +13,7 @@ ORIGINAL_DATASET_DIR = RAW_DATA_DIR
 ORIGINAL_PRE_DATASET = ORIGINAL_DATASET_DIR / "pre_dataset.xlsx"
 ORIGINAL_POST_DATASET= ORIGINAL_DATASET_DIR / "post_dataset.xlsx"
 ORIGINAL_TEST_VARIABLES = ORIGINAL_DATASET_DIR / "test_variables.xlsx"
-ORIGINAL_BEHAVIOUR_DATASET_CSV = ORIGINAL_DATASET_DIR / "Verhaltensfragebogen mit Zufallsvariable.csv"
+ORIGINAL_BEHAVIOR_DATASET_CSV = ORIGINAL_DATASET_DIR / "Verhaltensfragebogen mit Zufallsvariable.csv"
 
 # Standardized datasets
 STANDARDIZED_PRE_DATASET = ORIGINAL_DATASET_DIR / "pre_dataset_standardized.xlsx"

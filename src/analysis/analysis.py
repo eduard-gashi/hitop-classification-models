@@ -70,6 +70,8 @@ def calculate_vif_per_questionnaire(
         # 1. Vorverarbeitung
         df_clean = _preprocess_data(df)
         if df_clean is None:
+            # Optional: Info, warum übersprungen (kannst du auch weglassen für weniger Noise)
+            # print(f"⚠️  Überspringe {name} (zu wenig numerische Daten)")
             continue
         
         n_total_cols = df_clean.shape[1]
@@ -86,10 +88,13 @@ def calculate_vif_per_questionnaire(
         if not high_vif.empty:
             _print_vif_results(name, n_total_cols, high_vif, threshold, head)
             results[name] = high_vif
+        else:
+            # [NEU] Erfolgsmeldung für saubere Fragebögen
+            print(f"\n✅ Fragebogen: {name} (Gesamt: {n_total_cols} Items)")
+            print(f"   Alles sauber! Alle Items VIF < {threshold}")
 
     print("\n" + "=" * 60)
     return results
-
 
 # --- HILFSFUNKTIONEN (Private Helpers) ---
 
