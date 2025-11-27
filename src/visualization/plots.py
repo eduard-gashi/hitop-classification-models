@@ -2,194 +2,196 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import pandas as pd
-from typing import Dict
+from typing import Dict, Tuple, Optional
 from sklearn.preprocessing import StandardScaler
 
 def visualize_specific_fragebogen(
     frageboegen: Dict[str, pd.DataFrame], fragebogen_name: str, normalize=True
 ):
     """
-    Visualisiert die Distributionen eines spezifischen Fragebogens.
-
-    Parameters
-    ----------
-    frageboegen : Dict[str, pd.DataFrame]
-        Dictionary mit allen Fragebogen-DataFrames
-    fragebogen_name : str
-        Name des Fragebogens, der visualisiert werden soll
-    normalize : bool
-        Ob die Daten für Boxplot normalisiert werden sollen (Standard: True)
+    Hauptfunktion: Koordiniert die Visualisierung eines spezifischen Fragebogens.
     """
-    if fragebogen_name not in frageboegen:
-        print(f"Fehler: Fragebogen '{fragebogen_name}' nicht gefunden!")
-        print(f"Verfügbare Fragebögen: {list(frageboegen.keys())}")
+    # 1. Datenvorbereitung & Validierung
+    data = _prepare_data(frageboegen, fragebogen_name)
+    if data is None:
         return
+    
+    numeric_df, numeric_df_renamed, question_labels = data
 
-    df = frageboegen[fragebogen_name]
+    # 2. Statistiken ausgeben
+    _print_stats(fragebogen_name, numeric_df)
+
+    # 3. Visualisierungen aufrufen
+    #_plot_histograms(numeric_df_renamed, fragebogen_name)
+    #_plot_boxplots(numeric_df_renamed, fragebogen_name, normalize)
+    
+    # Korrelationen nur plotten, wenn sinnvoll (mehr als 1 Spalte, nicht zu viele)
+    n_cols = numeric_df.shape[1]
+    if 1 < n_cols <= 50:
+        #_plot_correlation_heatmap(numeric_df_renamed, fragebogen_name)
+        _plot_clustermap(numeric_df_renamed, fragebogen_name)
+    elif n_cols > 50:
+        print(f"Zu viele Spalten ({n_cols}) für Korrelationsplots - übersprungen.")
+    else:
+        print("Nur eine Spalte vorhanden – keine Korrelationsmatrix möglich.")
+
+    # 4. Mapping ausgeben
+    _print_mapping(numeric_df)
+
+
+# --- HILFSFUNKTIONEN ---
+
+def _prepare_data(
+    frageboegen: Dict[str, pd.DataFrame], name: str
+) -> Optional[Tuple[pd.DataFrame, pd.DataFrame, list]]:
+    """Extrahiert numerische Daten und erstellt Labels."""
+    if name not in frageboegen:
+        print(f"Fehler: Fragebogen '{name}' nicht gefunden!")
+        print(f"Verfügbare Fragebögen: {list(frageboegen.keys())}")
+        return None
+
+    df = frageboegen[name]
     numeric_df = df.select_dtypes(include="number")
 
     if numeric_df.empty:
-        print(f"{fragebogen_name}: Keine numerischen Daten vorhanden.")
-        return
+        print(f"{name}: Keine numerischen Daten vorhanden.")
+        return None
 
-    print(f"\n=== Visualisierung: {fragebogen_name} ===")
-    print(f"Shape: {numeric_df.shape}")
-    print(f"Anzahl Spalten: {numeric_df.shape[1]}")
-    print(f"Anzahl Zeilen: {numeric_df.shape[0]}\n")
-
-    # Erstelle durchnummerierte Labels
+    # Labels generieren und DF umbenennen
     question_labels = [f"Frage-{i+1}" for i in range(numeric_df.shape[1])]
-
-    # Umbenennung für alle Visualisierungen
     numeric_df_renamed = numeric_df.copy()
     numeric_df_renamed.columns = question_labels
 
-    # 1. Histogramme für alle Spalten mit neuen Labels
-    n_cols = numeric_df_renamed.shape[1]
+    return numeric_df, numeric_df_renamed, question_labels
+
+
+def _print_stats(name: str, df: pd.DataFrame):
+    """Gibt Basis-Statistiken aus."""
+    print(f"\n=== Visualisierung: {name} ===")
+    print(f"Shape: {df.shape}")
+    print(f"Anzahl Spalten: {df.shape[1]}")
+    print(f"Anzahl Zeilen: {df.shape[0]}\n")
+
+
+def _plot_histograms(df: pd.DataFrame, name: str):
+    """Erstellt das Histogramm-Grid."""
+    n_cols = df.shape[1]
     n_rows = int(np.ceil(n_cols / 4))
 
     fig, axes = plt.subplots(n_rows, 4, figsize=(16, 4 * n_rows))
-    axes = axes.flatten() if n_cols > 1 else [axes]
+    axes_flat = axes.flatten() if n_cols > 1 else [axes]
 
-    for i, col in enumerate(numeric_df_renamed.columns):
-        axes[i].hist(
-            numeric_df_renamed[col].dropna(),
+    for i, col in enumerate(df.columns):
+        ax = axes_flat[i]
+        ax.hist(
+            df[col].dropna(),
             bins=20,
             edgecolor="black",
             color="steelblue",
         )
-        axes[i].set_title(col, fontsize=10)
-        axes[i].set_xlabel("Wert")
-        axes[i].set_ylabel("Häufigkeit")
-        axes[i].grid(alpha=0.3)
+        ax.set_title(col, fontsize=10)
+        ax.set_xlabel("Wert")
+        ax.set_ylabel("Häufigkeit")
+        ax.grid(alpha=0.3)
 
     # Leere Subplots ausblenden
-    for i in range(n_cols, len(axes)):
-        axes[i].set_visible(False)
+    for i in range(n_cols, len(axes_flat)):
+        axes_flat[i].set_visible(False)
 
-    plt.suptitle(f"Histogramme – {fragebogen_name}", fontsize=16, fontweight="bold")
+    plt.suptitle(f"Histogramme – {name}", fontsize=16, fontweight="bold")
     plt.tight_layout()
     plt.show()
 
-    # 2. Boxplots - Original vs. Normalisiert
-    if normalize:
-        # Z-Score Normalisierung (Standardisierung)
-        scaler = StandardScaler()
-        normalized_values = scaler.fit_transform(numeric_df.dropna())
-        normalized_df = pd.DataFrame(normalized_values, columns=question_labels)
 
-        # Plot beide: Original und Normalisiert
-        fig, axes = plt.subplots(2, 1, figsize=(16, 12))
-
-        # Original Boxplot
-        numeric_df_renamed.plot(kind="box", ax=axes[0])
-        axes[0].set_title(
-            f"Boxplot (Original) – {fragebogen_name}", fontsize=14, fontweight="bold"
-        )
-        axes[0].set_ylabel("Original-Werte")
-        axes[0].set_xlabel("Fragen")
-        axes[0].grid(axis="y", alpha=0.3)
-        axes[0].tick_params(axis="x", rotation=45)
-
-        # Normalisierter Boxplot
-        normalized_df.plot(kind="box", ax=axes[1])
-        axes[1].set_title(
-            f"Boxplot (Z-Score normalisiert) – {fragebogen_name}",
-            fontsize=14,
-            fontweight="bold",
-        )
-        axes[1].set_ylabel("Standardisierte Werte (Mittelwert=0, Std=1)")
-        axes[1].set_xlabel("Fragen")
-        axes[1].grid(axis="y", alpha=0.3)
-        axes[1].tick_params(axis="x", rotation=45)
-
-        plt.tight_layout()
-        plt.show()
-
-    else:
-        # Nur Original-Boxplot
+def _plot_boxplots(df: pd.DataFrame, name: str, normalize: bool):
+    """Erstellt Boxplots (optional mit Normalisierung)."""
+    if not normalize:
+        # Einfacher Plot
         plt.figure(figsize=(16, 6))
-        numeric_df_renamed.plot(kind="box", ax=plt.gca())
-        plt.title(f"Boxplot – {fragebogen_name}", fontsize=14, fontweight="bold")
-        plt.xlabel("Fragen")
+        df.plot(kind="box", ax=plt.gca())
+        plt.title(f"Boxplot – {name}", fontsize=14, fontweight="bold")
         plt.xticks(rotation=45, ha="right")
-        plt.ylabel("Werte")
         plt.grid(axis="y", alpha=0.3)
         plt.tight_layout()
         plt.show()
+        return
 
-    # 3. Korrelationsmatrix als Heatmap (nur wenn mehr als 1 Spalte)
-    if numeric_df.shape[1] > 1 and numeric_df.shape[1] <= 50:
-        plt.figure(figsize=(12, 10))
-        corr = numeric_df.corr()
+    # Mit Normalisierung
+    scaler = StandardScaler()
+    normalized_values = scaler.fit_transform(df.dropna())
+    normalized_df = pd.DataFrame(normalized_values, columns=df.columns)
 
-        # Achsenbeschriftungen mit Frage-Nummern
-        corr_renamed = corr.copy()
-        corr_renamed.columns = question_labels
-        corr_renamed.index = question_labels
+    fig, axes = plt.subplots(2, 1, figsize=(16, 12))
 
-        sns.heatmap(
-            corr_renamed,
-            annot=False,
-            fmt=".2f",
-            cmap="coolwarm",
-            square=True,
-            linewidths=0.5,
-            cbar_kws={"shrink": 0.8},
-        )
-        plt.title(
-            f"Korrelationsmatrix – {fragebogen_name}", fontsize=14, fontweight="bold"
-        )
-        plt.tight_layout()
-        plt.show()
-    elif numeric_df.shape[1] > 50:
-        print(
-            f"Zu viele Spalten ({numeric_df.shape[1]}) für detaillierte Korrelationsmatrix - übersprungen."
-        )
-    else:
-        print("Nur eine Spalte vorhanden – keine Korrelationsmatrix möglich.")
+    # Original
+    df.plot(kind="box", ax=axes[0])
+    axes[0].set_title(f"Boxplot (Original) – {name}", fontsize=14, fontweight="bold")
+    axes[0].grid(axis="y", alpha=0.3)
+    axes[0].tick_params(axis="x", rotation=45)
 
-    # 4. ClusterMap der Korrelationsmatrix (nur wenn mehr als 1 Spalte und ≤50)
-    if numeric_df.shape[1] > 1 and numeric_df.shape[1] <= 50:
-        print(f"\nErstelle ClusterMap für {fragebogen_name}...")
+    # Normalisiert
+    normalized_df.plot(kind="box", ax=axes[1])
+    axes[1].set_title(f"Boxplot (Z-Score normalisiert) – {name}", fontsize=14, fontweight="bold")
+    axes[1].set_ylabel("Std. Werte (M=0, SD=1)")
+    axes[1].grid(axis="y", alpha=0.3)
+    axes[1].tick_params(axis="x", rotation=45)
 
-        # Korrelationsmatrix mit umbenannten Labels
-        corr_renamed = numeric_df.corr()
-        corr_renamed.columns = question_labels
-        corr_renamed.index = question_labels
+    plt.tight_layout()
+    plt.show()
 
-        # NEU: NaN Werte durch 0 ersetzen für ClusterMap!
-        corr_clean = corr_renamed.fillna(0)
-        # ClusterMap erstellen
-        g = sns.clustermap(
-            corr_clean,
-            cmap="coolwarm",
-            center=0,
-            linewidths=0.5,
-            figsize=(14, 14),
-            cbar_kws={"shrink": 0.8, "label": "Korrelation"},
-            dendrogram_ratio=0.15,
-            method="average",  # Linkage-Methode
-            metric="euclidean",  # Distanzmetrik
-        )
 
-        g.fig.suptitle(
-            f"ClusterMap (Hierarchisches Clustering) – {fragebogen_name}",
-            fontsize=16,
-            fontweight="bold",
-            y=0.98,
-        )
-        plt.show()
+def _plot_correlation_heatmap(df: pd.DataFrame, name: str):
+    """Erstellt die klassische Heatmap."""
+    plt.figure(figsize=(12, 10))
+    corr = df.corr()
+    
+    sns.heatmap(
+        corr,
+        annot=False,
+        fmt=".2f",
+        cmap="coolwarm",
+        square=True,
+        linewidths=0.5,
+        cbar_kws={"shrink": 0.8},
+    )
+    plt.title(f"Korrelationsmatrix – {name}", fontsize=14, fontweight="bold")
+    plt.tight_layout()
+    plt.show()
 
-        print("✓ ClusterMap erstellt - Fragen sind nach Ähnlichkeit gruppiert!")
-    elif numeric_df.shape[1] > 50:
-        print(
-            f"Zu viele Spalten ({numeric_df.shape[1]}) für ClusterMap - übersprungen."
-        )
 
-    # Mapping-Tabelle ausgeben
+def _plot_clustermap(df: pd.DataFrame, name: str):
+    """Erstellt die hierarchische ClusterMap."""
+    print(f"\nErstelle ClusterMap für {name}...")
+    
+    # NaN durch 0 ersetzen für Clustering
+    corr_clean = df.corr().fillna(0)
+    
+    g = sns.clustermap(
+        corr_clean,
+        cmap="coolwarm",
+        center=0,
+        linewidths=0.5,
+        figsize=(14, 14),
+        cbar_kws={"shrink": 0.8, "label": "Korrelation"},
+        dendrogram_ratio=0.15,
+        method="average",
+        metric="euclidean",
+    )
+    
+    g.fig.suptitle(
+        f"ClusterMap (Hierarchisches Clustering) – {name}",
+        fontsize=16,
+        fontweight="bold",
+        y=0.98,
+    )
+    plt.show()
+    print("✓ ClusterMap erstellt - Fragen sind nach Ähnlichkeit gruppiert!")
+
+
+def _print_mapping(original_df: pd.DataFrame):
+    """Gibt das Mapping der Spaltennamen aus."""
     print("\n=== Mapping: Frage-Nummer → Spaltenname ===")
-    for i, col in enumerate(numeric_df.columns):
+    for i, col in enumerate(original_df.columns):
         print(f"  Frage-{i+1}: {col}")
 
 

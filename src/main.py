@@ -51,7 +51,7 @@ def main():
         print(f"  {i}. {name}")
 
     # Visualisiere spezifische Fragebögen
-    # visualize_specific_fragebogen(pre_frageboegen_rw, "EDE-Q", normalize=True)
+    visualize_specific_fragebogen(pre_frageboegen, "EDE-Q", normalize=True)
     # visualize_specific_fragebogen(pre_frageboegen, "PHQ-9", normalize=True)
     # visualize_specific_fragebogen(pre_frageboegen, "IIP", normalize=True)
 
