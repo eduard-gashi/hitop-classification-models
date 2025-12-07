@@ -1,5 +1,5 @@
-from src.processing.data_loader import load_data
-from src.config import(
+from backend.processing.data_loader import load_data
+from backend.config import(
     SAMPLED_PRE_DATASET,
     SAMPLED_POST_DATASET,
 )
