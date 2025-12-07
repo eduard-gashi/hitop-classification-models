@@ -3,6 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './App.css'
 
 import Home from './pages/Home';
+import Diagnoeses from './pages/Diagnoeses';
+import Questionnaires from './pages/Questionnaires';
+import Patients from './pages/Patients';
+import FAQ from './pages/FAQ';
 
 
 function App() {
@@ -12,10 +16,10 @@ function App() {
       <main style={{ display: "flex", flexDirection: "column", minHeight: "90vh" }}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/diagnosen" element={<div>About Page</div>} />
-          <Route path="/frageboegen" element={<div>Fragebogen Explorer</div>} />
-          <Route path="/patienten" element={<div>Fragebogen Explorer</div>} />
-          <Route path="/faq" element={<div>Fragebogen Explorer</div>} />
+          <Route path="/diagnosen" element={<Diagnoeses/>} />
+          <Route path="/frageboegen" element={<Questionnaires/>} />
+          <Route path="/patienten" element={<Patients/>} />
+          <Route path="/faq" element={<FAQ/>} />
         </Routes>
       </main>
     </Router>
