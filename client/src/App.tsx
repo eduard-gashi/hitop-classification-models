@@ -8,12 +8,14 @@ import Questionnaires from './pages/Questionnaires';
 import Patients from './pages/Patients';
 import FAQ from './pages/FAQ';
 
+import Header from './components/Header';
 
 function App() {
 
   return (
     <Router>
       <main style={{ display: "flex", flexDirection: "column", minHeight: "90vh" }}>
+        <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/diagnosen" element={<Diagnoeses/>} />
