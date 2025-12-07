@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './App.css'
 
@@ -11,6 +11,8 @@ import FAQ from './pages/FAQ';
 import Header from './components/Header';
 
 function App() {
+
+  
 
   return (
     <Router>
