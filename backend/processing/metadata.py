@@ -44,6 +44,8 @@ def split_df_by_questionnaire(
 
     questionnaires_dict = {}
     for test in unique_tests:
+        if test == "Unbekannt":
+            continue
         relevant_columns = [
             col for col, t in zip(therapy_ratings_df.columns, column_tests) if t == test
         ]

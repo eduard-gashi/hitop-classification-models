@@ -55,7 +55,7 @@ def load_data(data_type="processed"):
     return df_test_vars, df_pre, df_post
 
 
-def load_and_process_data(data_type="processed"):
+def load_and_process_data(data_type="processed", include_diagnosis=True):
     """
     Loads and processes therapy rating datasets by attaching metadata and splitting by questionnaire.
 
@@ -89,11 +89,11 @@ def load_and_process_data(data_type="processed"):
 
     # Split ratings by questionnaire
     pre_frageboegen = split_df_by_questionnaire(
-        df_pre_therapy_ratings, df_metadata, include_diagnosis_cols=True
+        df_pre_therapy_ratings, df_metadata, include_diagnosis_cols=include_diagnosis
     )
     
     post_frageboegen = split_df_by_questionnaire(
-        df_post_therapy_ratings, df_metadata, include_diagnosis_cols=True
+        df_post_therapy_ratings, df_metadata, include_diagnosis_cols=include_diagnosis
     )
 
     return df_metadata, pre_frageboegen, post_frageboegen

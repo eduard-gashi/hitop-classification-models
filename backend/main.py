@@ -4,7 +4,6 @@ import numpy as np
 from flask import Flask, jsonify
 from flask_cors import CORS
 
-
 from backend.processing.data_loader import load_and_process_data
 
 
@@ -13,7 +12,7 @@ CORS(app)
 
 
 df_metadata, pre_fb, post_fb = load_and_process_data(
-    data_type="processed"
+    data_type="processed", include_diagnosis=False
 )
 
 
@@ -44,7 +43,6 @@ def get_fragebogen(name):
     fb_flat.columns = flat_cols
     
     fb_flat = fb_flat.replace({np.nan: None})
-
 
     data = fb_flat.to_dict(orient="records")  # Get dict as rows
 
