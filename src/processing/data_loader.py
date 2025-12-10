@@ -9,6 +9,7 @@ from src.config import (
     SAMPLED_PRE_DATASET,
     SAMPLED_POST_DATASET,
 )
+from src.processing.metadata import attach_metadata_as_multiindex, split_df_by_questionnaire
 
 def safe_read_excel(path, **kwargs):
     if Path(path).exists():
@@ -50,3 +51,46 @@ def load_data(data_type="processed"):
     df_test_vars = safe_read_excel(ORIGINAL_TEST_VARIABLES)
 
     return df_test_vars, df_pre, df_post
+
+def load_and_process_data(data_type="processed", include_diagnosis=True):
+    """
+    Loads and processes therapy rating datasets by attaching metadata and splitting by questionnaire.
+
+    Parameters:
+    -----------
+    data_type : str, default='processed'
+        Type of data to load. Options:
+        - 'raw' or 'original': Loads original datasets
+        - 'processed' or 'sampled': Loads sampled/processed datasets
+
+    Returns:
+    --------
+    dict
+        Dictionary with questionnaire names as keys and corresponding pre-therapy ratings DataFrames as values.
+    """
+    # Load data
+    df_metadata, df_pre_therapy_ratings, df_post_therapy_ratings = load_data(data_type=data_type)
+
+    # Attach metadata as MultiIndex to therapy ratings DataFrames
+    df_pre_therapy_ratings = attach_metadata_as_multiindex(
+        therapy_ratings_df=df_pre_therapy_ratings.copy(),
+        metadata_df=df_metadata,
+        metadata_column="Variablenlabel",
+    )
+    
+    df_post_therapy_ratings = attach_metadata_as_multiindex(
+        therapy_ratings_df=df_post_therapy_ratings.copy(),
+        metadata_df=df_metadata,
+        metadata_column="Variablenlabel",
+    )
+
+    # Split ratings by questionnaire
+    pre_frageboegen = split_df_by_questionnaire(
+        df_pre_therapy_ratings, df_metadata, include_diagnosis_cols=include_diagnosis
+    )
+    
+    post_frageboegen = split_df_by_questionnaire(
+        df_post_therapy_ratings, df_metadata, include_diagnosis_cols=include_diagnosis
+    )
+
+    return df_metadata, pre_frageboegen, post_frageboegen
