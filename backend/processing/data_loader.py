@@ -8,6 +8,8 @@ from backend.config import (
     STANDARDIZED_POST_DATASET,
     SAMPLED_PRE_DATASET,
     SAMPLED_POST_DATASET,
+    MAPPING,
+    HITOP_SPECTRA
 )
 from backend.processing.metadata import attach_metadata_as_multiindex, split_df_by_questionnaire
 
@@ -45,6 +47,9 @@ def load_data(data_type="processed"):
     elif data_type in ["processed", "sampled"]:
         df_pre = safe_read_excel(SAMPLED_PRE_DATASET)
         df_post = safe_read_excel(SAMPLED_POST_DATASET)
+    elif data_type == ["mapping"]:
+        df_pre = safe_read_excel(MAPPING)
+        df_post = None
     else:
         raise ValueError(
             f"Invalid data_type: {data_type}. Use 'raw', 'original', 'processed', or 'sampled'."
