@@ -1,6 +1,9 @@
 import pandas as pd
+from scipy.stats import norm
+
 from backend.processing.data_loader import load_data
 from backend.config import HITOP_SPECTRA
+
 
 def _clean_data(data):
     """
@@ -71,7 +74,7 @@ def get_spectra_codes() -> dict[str, list]:
     """
     _, data, _ = load_data()
 
-   # Rechtschreibung, Spalten zusammenfassen, Diagnosen vereinheitlichen
+    # Rechtschreibung, Spalten zusammenfassen, Diagnosen vereinheitlichen
     data = _clean_data(data)
 
     # Spalten der Spektra hinzufügen und als True/False mappen
@@ -87,5 +90,35 @@ def get_spectra_codes() -> dict[str, list]:
 
     return spectra_dict
 
-if __name__ == '__main__':
-    print(get_spectra_codes())
+
+def calculate_scores() -> pd.DataFrame:
+    """
+    Calculates the overall scores for each spectra.
+    Uses the get_spectra_codes function to access the mapping of each code to a HiTop-spectra. Averages the HiTop-spectra and negates
+    inverse questions. Turns the outcome of each patient into a probability between 0 and 1 with
+    """
+    mapping = get_spectra_codes()
+    polung = mapping.pop("Umpolen")
+
+    _, pre_dataset, _ = load_data("standardized")
+
+    for spectrum, columns in mapping.items():
+        valid_cols = [col for col in columns if col in pre_dataset.columns and "rw" not in col]
+
+        if valid_cols:
+            # Negate inverse questions
+            for col in polung.values:
+                if col in valid_cols:
+                    pre_dataset[col] = -pre_dataset[col]
+            
+            # Compute mean value across all codes for the spectrum
+            z_mean = pre_dataset[valid_cols].mean(axis=1)
+            # Compute probability
+            pre_dataset[f"{spectrum}_Score"] = norm.cdf(z_mean)
+
+            # Raw mean value
+            pre_dataset[f"{spectrum}_Z_Score"] = z_mean
+        else:
+            print(f"Warning: No valid columns found for spectrum '{spectrum}'")
+
+    return pre_dataset

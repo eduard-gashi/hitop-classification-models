@@ -19,9 +19,8 @@ ORIGINAL_BEHAVIOUR_DATASET_CSV = ORIGINAL_DATASET_DIR / "Verhaltensfragebogen mi
 MAPPING = ORIGINAL_DATASET_DIR / 'mapping.xlsx'
 
 # Standardized datasets
-STANDARDIZED_PRE_DATASET = ORIGINAL_DATASET_DIR / "pre_dataset_standardized.xlsx"
+STANDARDIZED_PRE_DATASET = ORIGINAL_DATASET_DIR / "pre_dataset_standardized.csv"
 STANDARDIZED_POST_DATASET= ORIGINAL_DATASET_DIR / "post_dataset_standardized.xlsx"
-
 
 # Sampled Dataset
 SAMPLED_DATASET_DIR = PROCESSED_DATA_DIR

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { api } from "../apiClient";
+
 
 type FragebogenData = {
     name: string;
@@ -13,20 +15,19 @@ function Questionnaires() {
     const [data, setData] = useState<FragebogenData | null>(null);
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/frageboegen")
-            .then((res) => res.json())
-            .then((data) => setNames(data))
+        api.get("/api/frageboegen")
+            .then((res) => setNames(res.data))
             .catch(console.error);
+            
     }, []);
 
     useEffect(() => {
         if (!questionnaireSelected) return;
 
-        fetch(`http://localhost:5000/api/frageboegen/${encodeURIComponent(questionnaireSelected)}`)
-            .then((res) => res.json())
-            .then((json: FragebogenData) => {
-                console.log(json);
-                setData(json);
+        api.get(`/api/frageboegen/${encodeURIComponent(questionnaireSelected)}`)
+            .then((res) => {
+                console.log(res.data);
+                setData(res.data);
             })
             .catch(console.error);
     }, [questionnaireSelected]);

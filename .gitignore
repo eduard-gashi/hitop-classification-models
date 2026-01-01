@@ -6,3 +6,8 @@ backend/processing/__pycache__
 backend/visualization/__pycache__
 
 data/
+
+.env
+
+# Client
+Clientlient/.env
