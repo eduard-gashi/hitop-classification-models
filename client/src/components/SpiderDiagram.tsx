@@ -15,7 +15,7 @@ export default function SpiderDiagram({ patient }: { patient: PatientData }) {
     ];
     console.log("SpiderDiagram data:", patient);
     return (
-        <div style={{ width: 600, height: 500 }}>
+        <div style={{ width: 600, height: 450 }}>
             <h2>Hitop Scores for Patient {patient.id}</h2>
             <ResponsiveContainer width="100%" height="100%">
                 <RadarChart data={data}>

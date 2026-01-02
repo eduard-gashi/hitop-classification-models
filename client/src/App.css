@@ -1,8 +1,5 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
 }
 
 .logo {
@@ -11,9 +8,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -22,6 +21,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -39,4 +39,51 @@
 
 .read-the-docs {
   color: #888;
+}
+
+
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid white;
+  padding: 2rem;
+  font-size: 0.8rem;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  margin: 0;
+}
+
+header nav {
+  display: flex;
+  gap: 1rem;
+  padding-top: 20px;
+}
+
+
+.patients-page {
+  padding: 150px;
+  padding-top: 50px;
+}
+
+.patient-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.patient-details {
+  display: flex;
+  padding: 10px;
+  margin-top: 30px;
+  justify-content: center;
 }

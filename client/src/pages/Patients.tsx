@@ -56,26 +56,29 @@ export default function Patients() {
     const currentPatient = selectedPatientId ? getPatientData(selectedPatientId) : null;
 
     return (
-        <div>
-            <h1>Patienten Explorer</h1>
+        <div className="patients-page">
+            <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", gap: "50px" }}>
+                <h1 style={{ justifyContent: "center", display: "flex", fontSize: "2.5rem" }}>
+                    Patienten Explorer
+                </h1>
 
-            {/* Select patient */}
-            <div style={{ marginBottom: "20px", display: "flex", alignItems: "center", gap: "10px", justifyContent: "space-between" }}>
-                Patient auswählen
-                <input
-                    type="number"
-                    value={typedId}
-                    onChange={(e) => setTypedId(e.target.value)}
-                    placeholder="Patienten-ID eingeben..."
-                    style={{ width: 300 }}
-                />
+                {/* Select patient */}
+                <div className="patient-selector">
+                    <input
+                        type="number"
+                        value={typedId}
+                        onChange={(e) => setTypedId(e.target.value)}
+                        placeholder="Patienten-ID eingeben..."
+                        style={{ width: 300 }}
+                    />
 
+                </div>
             </div>
 
             {/* Details */}
             {
                 currentPatient && (
-                    <div style={{ border: "1px solid black", padding: "10px" }}>
+                    <div className="patient-details">
                         <SpiderDiagram patient={currentPatient} />
                     </div>
                 )

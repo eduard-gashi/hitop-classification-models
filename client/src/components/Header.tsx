@@ -1,24 +1,19 @@
+import { Link } from "react-router-dom";
 
 export default function Header() {
-    return (
-        <header>
-            <h1>HiTop Classification Models</h1>
-
-            <nav
-                style={{
-                    display: "flex",
-                    gap: "1rem",
-                    borderBottom: "1px solid black",
-                    paddingBottom: "1rem",
-                    marginBottom: "1rem"
-                }}
-            >
-                <a href="/">Home</a>
-                <a href="/diagnosen">Diagnosen</a>
-                <a href="/frageboegen">Fragebögen</a>
-                <a href="/patienten">Patienten</a>
-                <a href="/faq">FAQ</a>
-            </nav>
-        </header>
-    );
+  return (
+    <header>
+      <h1>
+        <Link to="/" style={{ fontWeight: "bold", color: "#04925c" }}>
+          HiTop Classification Models
+        </Link>
+      </h1>
+      <nav>
+        <Link style={{ color: "white"}} to="/diagnosen">Diagnosen</Link>
+        <Link style={{ color: "white"}} to="/frageboegen">Fragebögen</Link>
+        <Link style={{ color: "white"}} to="/patienten">Patienten</Link>
+        <Link style={{ color: "white"}} to="/faq">FAQ</Link>
+      </nav>
+    </header>
+  );
 }
