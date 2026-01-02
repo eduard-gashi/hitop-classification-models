@@ -98,21 +98,23 @@ def calculate_scores() -> pd.DataFrame:
     inverse questions. Turns the outcome of each patient into a probability between 0 and 1 with
     """
     mapping = get_spectra_codes()
-    polung = mapping.pop("Umpolen")
+    polung = mapping.pop("Umpolen").values
+    polung = [f"z_{col}" for col in polung]
 
     _, pre_dataset, _ = load_data("standardized")
 
     for spectrum, columns in mapping.items():
-        valid_cols = [col for col in columns if col in pre_dataset.columns and "rw" not in col]
+        valid_cols = [f"z_{col}" for col in columns if f"z_{col}" in pre_dataset.columns and "rw" not in col]
 
         if valid_cols:
             # Negate inverse questions
-            for col in polung.values:
+            for col in polung:
                 if col in valid_cols:
                     pre_dataset[col] = -pre_dataset[col]
             
             # Compute mean value across all codes for the spectrum
             z_mean = pre_dataset[valid_cols].mean(axis=1)
+
             # Compute probability
             pre_dataset[f"{spectrum}_Score"] = norm.cdf(z_mean)
 
