@@ -11,4 +11,5 @@ export type HiTopScores = {
 export type PatientData = {
     id: number;
     scores: HiTopScores;
+    diagnoses: Array<string>;
 };

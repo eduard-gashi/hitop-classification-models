@@ -21,13 +21,19 @@ df_scores = calculate_scores()
 
 @app.get("/api/patient_scores")
 def get_all_patient_scores():
-    """Get the hitop-spectra scores for every patient."""
+    """Get the hitop-spectra scores and diagnoses for every patient."""
     cols = ["Code"] + [f"{s}_Score" for s in HITOP_SPECTRA[:-1]]  # Exclude "Umpolen"
 
     df_export = df_scores[cols].rename(columns={"Code": "id"})
-    
+
+    diagnosis_columns = [col for col in df_scores.columns if col.startswith("Diag")]
+
+    df_export["diagnoses"] = df_scores[diagnosis_columns].apply(
+        lambda row: row.dropna().tolist(), axis=1
+    )
+
     data = df_export.replace({np.nan: None}).to_dict(orient="records")
-    
+
     return jsonify(data)
 
 

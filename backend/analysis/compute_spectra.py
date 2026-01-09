@@ -100,7 +100,7 @@ def calculate_scores() -> pd.DataFrame:
     mapping = get_spectra_codes()
     polung = mapping.pop("Umpolen").values
     polung = [f"z_{col}" for col in polung]
-
+    
     _, pre_dataset, _ = load_data("standardized")
 
     for spectrum, columns in mapping.items():
@@ -124,3 +124,6 @@ def calculate_scores() -> pd.DataFrame:
             print(f"Warning: No valid columns found for spectrum '{spectrum}'")
 
     return pre_dataset
+
+if __name__ == "__main__":
+    calculate_scores()
