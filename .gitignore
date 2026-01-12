@@ -1,1 +1,13 @@
 __pycache__
+
+backend/__pycache__
+backend/analysis/__pycache__
+backend/processing/__pycache__
+backend/visualization/__pycache__
+
+data/
+
+.env
+
+# Client
+Clientlient/.env

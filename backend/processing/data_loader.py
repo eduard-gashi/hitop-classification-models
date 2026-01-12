@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-from src.config import (
+from backend.config import (
     ORIGINAL_PRE_DATASET,
     ORIGINAL_POST_DATASET,
     ORIGINAL_TEST_VARIABLES,
@@ -8,15 +8,32 @@ from src.config import (
     STANDARDIZED_POST_DATASET,
     SAMPLED_PRE_DATASET,
     SAMPLED_POST_DATASET,
+    MAPPING,
+    HITOP_SPECTRA,
 )
-from src.processing.metadata import attach_metadata_as_multiindex, split_df_by_questionnaire
+from backend.processing.metadata import (
+    attach_metadata_as_multiindex,
+    split_df_by_questionnaire,
+)
+
 
 def safe_read_excel(path, **kwargs):
+    print(f"Lade Datei: {path}")
     if Path(path).exists():
         return pd.read_excel(path, **kwargs)
-    else: 
+    else:
         print(f"Error: Datei nicht gefunden - {path}")
         return None
+
+
+def safe_read_csv(path, **kwargs):
+    print(f"Lade Datei: {path}")
+    if Path(path).exists():
+        return pd.read_csv(path, **kwargs)
+    else:
+        print(f"Error: Datei nicht gefunden - {path}")
+        return None
+
 
 def load_data(data_type="processed"):
     """
@@ -38,11 +55,14 @@ def load_data(data_type="processed"):
         df_pre = safe_read_excel(ORIGINAL_PRE_DATASET)
         df_post = safe_read_excel(ORIGINAL_POST_DATASET)
     elif data_type == "standardized":
-        df_pre = safe_read_excel(STANDARDIZED_PRE_DATASET)
+        df_pre = safe_read_csv(STANDARDIZED_PRE_DATASET)
         df_post = safe_read_excel(STANDARDIZED_POST_DATASET)
     elif data_type in ["processed", "sampled"]:
         df_pre = safe_read_excel(SAMPLED_PRE_DATASET)
         df_post = safe_read_excel(SAMPLED_POST_DATASET)
+    elif data_type == ["mapping"]:
+        df_pre = safe_read_excel(MAPPING)
+        df_post = None
     else:
         raise ValueError(
             f"Invalid data_type: {data_type}. Use 'raw', 'original', 'processed', or 'sampled'."
@@ -51,6 +71,7 @@ def load_data(data_type="processed"):
     df_test_vars = safe_read_excel(ORIGINAL_TEST_VARIABLES)
 
     return df_test_vars, df_pre, df_post
+
 
 def load_and_process_data(data_type="processed", include_diagnosis=True):
     """
@@ -69,7 +90,9 @@ def load_and_process_data(data_type="processed", include_diagnosis=True):
         Dictionary with questionnaire names as keys and corresponding pre-therapy ratings DataFrames as values.
     """
     # Load data
-    df_metadata, df_pre_therapy_ratings, df_post_therapy_ratings = load_data(data_type=data_type)
+    df_metadata, df_pre_therapy_ratings, df_post_therapy_ratings = load_data(
+        data_type=data_type
+    )
 
     # Attach metadata as MultiIndex to therapy ratings DataFrames
     df_pre_therapy_ratings = attach_metadata_as_multiindex(
@@ -77,7 +100,7 @@ def load_and_process_data(data_type="processed", include_diagnosis=True):
         metadata_df=df_metadata,
         metadata_column="Variablenlabel",
     )
-    
+
     df_post_therapy_ratings = attach_metadata_as_multiindex(
         therapy_ratings_df=df_post_therapy_ratings.copy(),
         metadata_df=df_metadata,
@@ -88,7 +111,7 @@ def load_and_process_data(data_type="processed", include_diagnosis=True):
     pre_frageboegen = split_df_by_questionnaire(
         df_pre_therapy_ratings, df_metadata, include_diagnosis_cols=include_diagnosis
     )
-    
+
     post_frageboegen = split_df_by_questionnaire(
         df_post_therapy_ratings, df_metadata, include_diagnosis_cols=include_diagnosis
     )

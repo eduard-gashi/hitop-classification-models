@@ -15,14 +15,16 @@ ORIGINAL_POST_DATASET= ORIGINAL_DATASET_DIR / "post_dataset.xlsx"
 ORIGINAL_TEST_VARIABLES = ORIGINAL_DATASET_DIR / "test_variables.xlsx"
 ORIGINAL_BEHAVIOUR_DATASET_CSV = ORIGINAL_DATASET_DIR / "Verhaltensfragebogen mit Zufallsvariable.csv"
 
-# Standardized datasets
-STANDARDIZED_PRE_DATASET = ORIGINAL_DATASET_DIR / "pre_dataset_standardized.xlsx"
-STANDARDIZED_POST_DATASET= ORIGINAL_DATASET_DIR / "post_dataset_standardized.xlsx"
+# Raw Mapping
+MAPPING = ORIGINAL_DATASET_DIR / 'mapping.xlsx'
 
+# Standardized datasets
+STANDARDIZED_PRE_DATASET = ORIGINAL_DATASET_DIR / "pre_dataset_standardized.csv"
+STANDARDIZED_POST_DATASET= ORIGINAL_DATASET_DIR / "post_dataset_standardized.xlsx"
 
 # Sampled Dataset
 SAMPLED_DATASET_DIR = PROCESSED_DATA_DIR
-SAMPLED_PRE_DATASET = SAMPLED_DATASET_DIR / "pre_dataset.xlsx"
+SAMPLED_PRE_DATASET = SAMPLED_DATASET_DIR / "mapping.xlsx"
 SAMPLED_POST_DATASET = SAMPLED_DATASET_DIR / "post_dataset.xlsx"
 
 # Output paths
@@ -30,4 +32,13 @@ OUTPUT_DIR = BASE_DIR / "outputs"
 PLOTS_DIR = OUTPUT_DIR / "plots"
 RESULTS_DIR = OUTPUT_DIR / "results"
 
-#TODO: other constants
+# HITOP Variables
+HITOP_SPECTRA = [
+    "Somatoform",
+    "Internalizing",
+    "Thought Disorder",
+    "Detachment",
+    "Disinhibited Externalizing",
+    "Antagonistic Externalizing",
+    "Umpolen"
+]
