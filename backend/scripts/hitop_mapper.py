@@ -3,7 +3,7 @@ from typing import Dict
 import pandas as pd
 from openai import OpenAI
 
-from src.processing.data_loader import load_and_process_data
+from backend.processing.data_loader import load_and_process_data
 
 
 api_key = os.environ.get("PERPLEXITY_API_KEY")
